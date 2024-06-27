@@ -10,7 +10,13 @@ namespace Microsoft.AspNetCore.Builder;
 /// </summary>
 public static class HttpMetricsEndpointConventionBuilderExtensions
 {
-    public static IEndpointConventionBuilder DisableHttpMetrics(this IEndpointConventionBuilder builder)
+    /// <summary>
+    /// Specifies that an HTTP duration metric is disabled for an endpoint.
+    /// </summary>
+    /// <typeparam name="TBuilder">The type of endpoint convention builder.</typeparam>
+    /// <param name="builder">The endpoint convention builder.</param>
+    /// <returns>The original convention builder parameter.</returns>
+    public static TBuilder DisableHttpMetrics<TBuilder>(this TBuilder builder) where TBuilder : IEndpointConventionBuilder
     {
         builder.Add(b => b.Metadata.Add(new DisableHttpMetricsAttribute()));
         return builder;
