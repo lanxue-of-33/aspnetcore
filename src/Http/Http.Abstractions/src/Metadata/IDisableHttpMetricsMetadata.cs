@@ -3,6 +3,9 @@
 
 namespace Microsoft.AspNetCore.Http.Metadata;
 
+/// <summary>
+/// A marker interface which can be used to identify metadata that disables HTTP request duration metrics.
+/// </summary>
 public interface IDisableHttpMetricsMetadata
 {
 }
