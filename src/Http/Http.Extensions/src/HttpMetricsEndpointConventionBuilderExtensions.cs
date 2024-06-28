@@ -11,7 +11,7 @@ namespace Microsoft.AspNetCore.Builder;
 public static class HttpMetricsEndpointConventionBuilderExtensions
 {
     /// <summary>
-    /// Specifies that an HTTP duration metric is disabled for an endpoint.
+    /// Specifies that HTTP request duration metrics is disabled for an endpoint.
     /// </summary>
     /// <typeparam name="TBuilder">The type of endpoint convention builder.</typeparam>
     /// <param name="builder">The endpoint convention builder.</param>

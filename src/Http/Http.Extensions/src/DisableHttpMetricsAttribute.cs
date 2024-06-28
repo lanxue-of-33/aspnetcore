@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.Metadata;
 namespace Microsoft.AspNetCore.Http;
 
 /// <summary>
-/// Specifies that an HTTP duration metric is disabled for an endpoint.
+/// Specifies that HTTP request duration metrics is disabled for an endpoint.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
 public sealed class DisableHttpMetricsAttribute : Attribute, IDisableHttpMetricsMetadata
