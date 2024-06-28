@@ -132,16 +132,48 @@ internal sealed class OpenApiSchemaService(
 
     internal async Task ApplySchemaTransformersAsync(OpenApiSchema schema, Type type, ApiParameterDescription? parameterDescription = null, CancellationToken cancellationToken = default)
     {
+        var jsonTypeInfo = _jsonSerializerOptions.GetTypeInfo(type);
         var context = new OpenApiSchemaTransformerContext
         {
             DocumentName = documentName,
             Type = type,
+            JsonTypeInfo = jsonTypeInfo,
+            JsonPropertyInfo = null,
             ParameterDescription = parameterDescription,
             ApplicationServices = serviceProvider
         };
         for (var i = 0; i < _openApiOptions.SchemaTransformers.Count; i++)
         {
             var transformer = _openApiOptions.SchemaTransformers[i];
+            for (var j = 0; j < schema.Properties.Count; j++)
+            {
+                var property = schema.Properties.ElementAt(j);
+                var propertyInfo = _jsonSerializerOptions.GetTypeInfo(type).Properties[j];
+                context.SetJsonPropertyInfo(propertyInfo);
+                context.SetJsonTypeInfo(_jsonSerializerOptions.GetTypeInfo(propertyInfo.PropertyType));
+                context.SetType(propertyInfo.PropertyType);
+                await transformer(property.Value, context, cancellationToken);
+            }
+            if (schema.Items is not null)
+            {
+                context.SetType(jsonTypeInfo.ElementType!);
+                context.SetJsonPropertyInfo(null);
+                await transformer(schema.Items, context, cancellationToken);
+            }
+            if (schema.AnyOf is not null)
+            {
+                for (var k = 0; k < schema.AnyOf.Count; k++)
+                {
+                    var anyOfSchema = schema.AnyOf[k];
+                    context.SetType(jsonTypeInfo.PolymorphismOptions!.DerivedTypes[k].DerivedType);
+                    context.SetJsonTypeInfo(_jsonSerializerOptions.GetTypeInfo(jsonTypeInfo.PolymorphismOptions.DerivedTypes[k].DerivedType));
+                    context.SetJsonPropertyInfo(null);
+                    await transformer(anyOfSchema, context, cancellationToken);
+                }
+            }
+            context.SetType(type);
+            context.SetJsonPropertyInfo(null);
+            context.SetJsonTypeInfo(jsonTypeInfo);
             await transformer(schema, context, cancellationToken);
         }
     }
