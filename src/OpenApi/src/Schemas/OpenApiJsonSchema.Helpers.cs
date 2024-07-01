@@ -313,10 +313,6 @@ internal sealed partial class OpenApiJsonSchema
                 schema.Enum = [ReadOpenApiAny(ref reader, out var constType)];
                 schema.Type = constType;
                 break;
-            case OpenApiSchemaKeywords.ReadOnlyKeyword:
-                reader.Read();
-                schema.ReadOnly = reader.GetBoolean();
-                break;
             default:
                 reader.Skip();
                 break;
