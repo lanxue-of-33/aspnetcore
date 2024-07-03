@@ -302,6 +302,11 @@ public class OpenApiSchemaComparerTests
         Assert.False(OpenApiSchemaComparer.Instance.Equals(originalSchema, modifiedSchema));
         Assert.True(propertyNames.Remove(nameof(OpenApiSchema.Xml)));
 
+        modifiedSchema = new(originalSchema);
+        modifiedSchema.MetadataCollection.Add(Microsoft.AspNetCore.OpenApi.OpenApiConstants.SchemaId, "SomeTypeId");
+        Assert.False(OpenApiSchemaComparer.Instance.Equals(originalSchema, modifiedSchema));
+        Assert.True(propertyNames.Remove(nameof(OpenApiSchema.MetadataCollection)));
+
         Assert.Empty(propertyNames);
     }
 }

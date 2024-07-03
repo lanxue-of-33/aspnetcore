@@ -65,7 +65,21 @@ internal sealed class OpenApiSchemaComparer : IEqualityComparer<OpenApiSchema>
             x.UniqueItems == y.UniqueItems &&
             x.UnresolvedReference == y.UnresolvedReference &&
             x.WriteOnly == y.WriteOnly &&
-            OpenApiXmlComparer.Instance.Equals(x.Xml, y.Xml);
+            OpenApiXmlComparer.Instance.Equals(x.Xml, y.Xml) &&
+            EqualSchemaIds(x, y);
+    }
+
+    internal static bool EqualSchemaIds(OpenApiSchema x, OpenApiSchema y)
+    {
+        if (x.MetadataCollection.TryGetValue(OpenApiConstants.SchemaId, out var schemaIdX) &&
+            y.MetadataCollection.TryGetValue(OpenApiConstants.SchemaId, out var schemaIdY))
+        {
+            if (schemaIdX is string schemaIdStringX && schemaIdY is string schemaIdStringY)
+            {
+                return schemaIdStringX.Equals(schemaIdStringY, StringComparison.Ordinal);
+            }
+        }
+        return true;
     }
 
     public int GetHashCode(OpenApiSchema obj)

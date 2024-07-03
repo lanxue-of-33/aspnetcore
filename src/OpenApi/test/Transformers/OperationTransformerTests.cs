@@ -134,7 +134,7 @@ public class OperationTransformerTests : OpenApiDocumentServiceTestBase
         var options = new OpenApiOptions();
         options.UseOperationTransformer((operation, context, cancellationToken) =>
         {
-            operation.Extensions.Remove("x-aspnetcore-id");
+            operation.MetadataCollection.Remove("x-aspnetcore-id");
             return Task.CompletedTask;
         });
         options.UseOperationTransformer((operation, context, cancellationToken) =>
